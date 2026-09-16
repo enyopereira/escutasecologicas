@@ -1,46 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=0.1"
-    >
-
-    <title>Ecologias da Escuta</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecologias da Escuta</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
-
 <body>
+  <video id="videoEcologia" preload="auto" playsinline muted>
+    <source src="ecologia1.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo HTML5.
+  </video>
 
-    <video
-        id="videoEcologia"
-        preload="metadata"
-        playsinline
-    >
-        <source src="ecologia1.mp4" type="video/mp4">
-
-        Seu navegador não suporta vídeo HTML5.
-    </video>
-
-
-    <div id="interface">
-
-        <button
-            id="botaoIniciar"
-            type="button"
-        >
-            iniciar
-        </button>
-
+  <main id="interface" aria-label="Composição da paisagem sonora">
+    <p id="pergunta">Quais sons representam a paisagem sonora do lugar?</p>
+    <p id="instrucao">Selecione os sons e pressione Iniciar. Use as setas e Enter/OK.</p>
+    <div id="botoes" role="group" aria-label="Controles e sons">
+      <button id="botaoIniciar" type="button">Iniciar</button>
+      <button id="botaoParar" type="button">Parar</button>
+      <button id="botaoConfirmar" type="button">Confirmar</button>
+      <button type="button" data-som="vento" aria-pressed="false">Vento</button>
+      <button type="button" data-som="vaca" aria-pressed="false">Vaca</button>
+      <button type="button" data-som="bentevi" aria-pressed="false">Bem-te-vi</button>
+      <button type="button" data-som="trem" aria-pressed="false">Trem</button>
     </div>
+  </main>
+  <p id="mensagem" role="status" aria-live="polite" hidden></p>
 
-
-    <script src="script.js"></script>
-
+  <!-- Prepare os MP3 com a duração do vídeo e com seus intervalos de silêncio. -->
+  <audio id="vento" src="vento.mp3" preload="auto"></audio>
+  <audio id="vaca" src="vaca.mp3" preload="auto"></audio>
+  <audio id="bentevi" src="bentevi.mp3" preload="auto"></audio>
+  <audio id="trem" src="trem.mp3" preload="auto"></audio>
 </body>
-
 </html>
