@@ -18,16 +18,16 @@ let emReproducao = false;
 // Comentários apresentados ao confirmar a composição.
 const comentarios = {
   vento:
-    "Vento: sugere movimento do ar e a sensação de espaço aberto.",
+    "Vento: evento natural do lugar.",
 
   vaca:
-    "Vaca: relaciona o som aos animais visíveis na paisagem.",
+    "Vaca: animal natural do lugar.",
 
   bentevi:
-    "Bem-te-vi: acrescenta uma presença que pode estar fora do enquadramento.",
+    "Passaro: animal natural do lugar.",
 
   trem:
-    "Trem: sugere uma atividade além da imagem e transforma a percepção do lugar."
+    "Trem: não pertence a paisagem natural."
 };
 
 // Exibe uma mensagem na tela.
@@ -145,7 +145,7 @@ confirmar.addEventListener("click", () => {
   texto.push(
     selecionados.size === 4
       ? "Todos os sons precisam do mesmo destaque? Retire uma camada e escute novamente."
-      : "Como suas escolhas mudaram a percepção da imagem? Experimente outra combinação."
+      : ""
   );
 
   avisar(texto.join("\n\n"));
