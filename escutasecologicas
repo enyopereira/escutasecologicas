@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Escutas Ecológicas</title>
+	<style>
+		:root{--ink:#19332b;--muted:#63746c;--cream:#f5f2e9;--leaf:#2f7356;--lime:#c8df83}
+		*{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+		header{display:flex;justify-content:space-between;align-items:center;padding:24px 7%;border-bottom:1px solid #dce1d4}
+		.brand{font-weight:800;letter-spacing:.06em}.brand span{color:var(--leaf)} nav a{margin-left:24px;color:var(--ink);text-decoration:none;font-size:.9rem}
+		main{max-width:1180px;margin:auto;padding:clamp(55px,10vw,125px) 7% 70px}.hero{max-width:780px}
+		.eyebrow{color:var(--leaf);font-weight:700;text-transform:uppercase;letter-spacing:.15em;font-size:.76rem}
+		h1{font-size:clamp(3rem,8vw,7.2rem);line-height:.94;letter-spacing:-.07em;margin:22px 0}.hero p{max-width:560px;color:var(--muted);font-size:1.15rem}
+		.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.button{border:0;border-radius:99px;padding:13px 22px;background:var(--ink);color:white;cursor:pointer;font-weight:700}.button.alt{background:transparent;color:var(--ink);border:1px solid #b8c5b5}
+		.panel{margin-top:75px;background:var(--leaf);color:white;border-radius:28px;padding:30px;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}.panel h2{margin:0 0 5px;font-size:1.7rem}.panel p{margin:0;color:#dcebdc}.play{width:70px;height:70px;border-radius:50%;border:0;background:var(--lime);color:var(--ink);font-size:1.5rem;cursor:pointer}.status{font-size:.85rem;opacity:.85;margin-top:9px}
+		@media(max-width:600px){header{padding:18px 5%}nav a{margin-left:10px;font-size:.78rem}main{padding-left:5%;padding-right:5%}.panel{padding:24px}}
+	</style>
+</head>
+<body>
+	<header><div class="brand">ESCUTAS <span>ECOLÓGICAS</span></div><nav><a href="#sobre">Sobre</a><a href="#ouvir">Ouvir</a></nav></header>
+	<main>
+		<section class="hero" id="sobre">
+			<div class="eyebrow">Um arquivo vivo de paisagens sonoras</div>
+			<h1>Ouça o que a natureza está dizendo.</h1>
+			<p>Uma experiência de atenção e cuidado através dos sons que habitam nossos territórios. Pare, respire e escute.</p>
+			<div class="actions"><a class="button" href="#ouvir">Começar a escutar</a><a class="button alt" href="#sobre">Conheça o projeto</a></div>
+		</section>
+		<section class="panel" id="ouvir">
+			<div><div class="eyebrow" style="color:var(--lime)">Escuta em destaque</div><h2>Manhã na mata</h2><p>Floresta Atlântica · 04:32</p><div class="status" id="status">Pronto para escutar</div></div>
+			<button class="play" id="play" aria-label="Reproduzir escuta">▶</button>
+		</section>
+	</main>
+	<script>
+		const button = document.querySelector('#play'), status = document.querySelector('#status');
+		let playing = false;
+		button.addEventListener('click', () => {
+			playing = !playing;
+			button.textContent = playing ? 'Ⅱ' : '▶';
+			status.textContent = playing ? 'Escutando…' : 'Escuta pausada';
+		});
+	</script>
+</body>
+</html>
