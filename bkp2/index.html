@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecologias da Escuta</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <video id="videoEcologia" preload="auto" playsinline muted>
+    <source src="ecologia1.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <main id="interface" aria-label="Composição da paisagem sonora">
+    <p id="pergunta">Como diferentes sons transformam a percepção desta paisagem?</p>
+    <p id="instrucao">Escolha uma combinação, ouça, depois troque as camadas e compare.</p>
+    <div id="botoes" role="group" aria-label="Controles e camadas sonoras">
+      <button id="botaoIniciar" type="button">Iniciar</button>
+      <button id="botaoParar" type="button">Parar</button>
+      <button id="botaoConfirmar" type="button">Confirmar</button>
+      <button type="button" data-som="vento" aria-pressed="false">Vento</button>
+      <button type="button" data-som="vaca" aria-pressed="false">Vaca</button>
+      <button type="button" data-som="bentevi" aria-pressed="false">Pássaro</button>
+      <button type="button" data-som="trem" aria-pressed="false">Trem</button>
+    </div>
+  </main>
+  <p id="mensagem" role="status" aria-live="polite" hidden></p>
+
+  <!-- Créditos das mídias. Preencha e remova o comentário para exibir na tela.
+  <p id="creditos">
+    Vídeo: [autoria], [licença]. Sons: [autoria], [licença].
+  </p>
+  -->
+
+  <!-- Prepare os MP3 com a duração do vídeo e com seus intervalos de silêncio. -->
+  <audio id="vento" src="vento.mp3" preload="auto"></audio>
+  <audio id="vaca" src="vaca.mp3" preload="auto"></audio>
+  <audio id="bentevi" src="passaro.mp3" preload="auto"></audio>
+  <audio id="trem" src="trem.mp3" preload="auto"></audio>
+</body>
+</html>

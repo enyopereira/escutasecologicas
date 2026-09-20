@@ -1,11 +1,3 @@
-/* Recuos da área segura e dos elementos dentro dela.
-   Se a TV de teste cortar mais que 5%, ajuste aqui, em um lugar só. */
-:root {
-  --overscan-x: 5%;
-  --overscan-y: 5%;
-  --recuo: 5%;
-}
-
 * { box-sizing: border-box; }
 
 html, body {
@@ -17,7 +9,6 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
-/* O vídeo ocupa a tela inteira, por baixo da área segura. */
 #videoEcologia {
   position: fixed;
   inset: 0;
@@ -26,22 +17,13 @@ html, body {
   object-fit: cover;
 }
 
-/* Área segura de TV: nada aqui dentro alcança as bordas da tela.
-   Os percentuais dos elementos filhos passam a ser calculados
-   sobre este contêiner, e não sobre a janela. */
-#tela {
-  position: fixed;
-  top: var(--overscan-y);
-  right: var(--overscan-x);
-  bottom: var(--overscan-y);
-  left: var(--overscan-x);
-}
-
+/* O primeiro botão começa a 10% da esquerda.
+   A base dos botões fica a 10% da borda inferior. */
 #interface {
-  position: absolute;
-  left: var(--recuo);
-  right: var(--recuo);
-  bottom: var(--recuo);
+  position: fixed;
+  left: 10%;
+  bottom: 10%;
+  width: 80%;
 }
 
 #pergunta, #instrucao {
@@ -103,18 +85,17 @@ html, body {
 }
 #botoes button[aria-pressed="true"]::before { content: "✓ "; }
 
-/* Caixa de retorno: posicionada dentro da área segura,
-   com respiro interno maior e espaço reservado para a rolagem. */
+/* A caixa de retorno recebe textos mais longos que na versão anterior:
+   ocupa mais altura, começa mais acima e usa corpo menor com entrelinha maior. */
 #mensagem {
-  position: absolute;
-  top: var(--recuo);
-  right: var(--recuo);
+  position: fixed;
+  top: 12%;
+  right: 8%;
   width: 42%;
   max-height: 60%;
   overflow-y: auto;
-  scrollbar-gutter: stable;
   margin: 0;
-  padding: 24px;
+  padding: 16px 18px;
   border-radius: 6px;
   color: #fff;
   background: rgba(0, 0, 0, 0.72);
@@ -125,10 +106,10 @@ html, body {
 
 /* Créditos das mídias, se exibidos na tela. */
 #creditos {
-  position: absolute;
-  left: var(--recuo);
-  right: var(--recuo);
-  bottom: 0;
+  position: fixed;
+  left: 10%;
+  bottom: 3%;
+  width: 80%;
   margin: 0;
   color: rgba(255, 255, 255, 0.85);
   font-size: 16px;
