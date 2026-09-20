@@ -1,12 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ecologias da Escuta</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecologias da Escuta</title>
+
+<style>
+/* Duas caixas simétricas na faixa inferior da tela.
+   Ambas: topo em 80%, base a 5% da borda inferior, 5% da borda lateral.
+   Para mudar o enquadramento, mexa apenas nestas variáveis. */
+:root {
+  --caixa-topo: 80%;
+  --caixa-base: 5%;
+  --margem: 5%;
+  --caixa-largura: 44%;
+
+  /* Corpos de texto, proporcionais à altura da tela.
+     Aumente ou diminua tudo por aqui. */
+  --fonte-pergunta: 2.8vh;
+  --fonte-instrucao: 2.2vh;
+  --fonte-retorno: 2.5vh;
+  --fonte-botoes: 2.2vh;
+
+  --fundo-caixa: rgba(0, 0, 0, 0.88);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: Arial, sans-serif;
+}
+
+#videoEcologia {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Base comum das duas caixas. */
+#interface, #mensagem {
+  position: fixed;
+  top: var(--caixa-topo);
+  bottom: var(--caixa-base);
+  width: var(--caixa-largura);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--fundo-caixa);
+}
+
+/* Metade esquerda: pergunta, orientação e botões. */
+#interface { left: var(--margem); }
+
+/* Metade direita: retorno. */
+#mensagem {
+  right: var(--margem);
+  font-size: clamp(15px, var(--fonte-retorno), 32px);
+  line-height: 1.2;
+  white-space: pre-line;
+}
+#mensagem[hidden] { display: none; }
+
+#pergunta {
+  margin: 0 0 6px;
+  font-size: clamp(17px, var(--fonte-pergunta), 36px);
+  line-height: 1.2;
+}
+
+#instrucao {
+  margin: 0 0 10px;
+  font-size: clamp(14px, var(--fonte-instrucao), 28px);
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+#botoes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 1vh;
+  /* Mantém uma única linha também em telas estreitas. */
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px;
+  margin: -4px;
+}
+#botoes::-webkit-scrollbar { display: none; }
+
+#botoes button {
+  flex: 0 0 auto;
+  padding: 0.35vh 0.9vh;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: clamp(14px, var(--fonte-botoes), 28px);
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#botoes button:focus {
+  outline: 3px solid #00ff66;
+  outline-offset: 2px;
+}
+
+#botoes button[aria-pressed="true"] {
+  background: #ffe08a;
+  color: #111;
+}
+#botoes button[aria-pressed="true"]::before { content: "✓ "; }
+
+/* Créditos das mídias. Remova o comentário no HTML para exibir. */
+#creditos {
+  position: fixed;
+  top: var(--margem);
+  left: var(--margem);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(11px, 1.4vh, 16px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+</style>
 </head>
+
 <body>
   <video id="videoEcologia" preload="auto" playsinline muted>
     <source src="ecologia1.mp4" type="video/mp4">
@@ -14,8 +146,8 @@
   </video>
 
   <main id="interface" aria-label="Composição da paisagem sonora">
-    <p id="pergunta">Como diferentes sons transformam a percepção desta paisagem?</p>
-    <p id="instrucao">Escolha uma combinação, ouça, depois troque as camadas e compare.</p>
+    <p id="pergunta">Como cada som transforma esta paisagem?</p>
+    <p id="instrucao">Pressione Iniciar para começar em tela cheia.</p>
     <div id="botoes" role="group" aria-label="Controles e camadas sonoras">
       <button id="botaoIniciar" type="button">Iniciar</button>
       <button id="botaoParar" type="button">Parar</button>
@@ -26,12 +158,11 @@
       <button type="button" data-som="trem" aria-pressed="false">Trem</button>
     </div>
   </main>
+
   <p id="mensagem" role="status" aria-live="polite" hidden></p>
 
-  <!-- Créditos das mídias. Preencha e remova o comentário para exibir na tela.
-  <p id="creditos">
-    Vídeo: [autoria], [licença]. Sons: [autoria], [licença].
-  </p>
+  <!-- Créditos das mídias. Preencha e remova o comentário para exibir.
+  <p id="creditos">Vídeo: [autoria], [licença]. Sons: [autoria], [licença].</p>
   -->
 
   <!-- Prepare os MP3 com a duração do vídeo e com seus intervalos de silêncio. -->
@@ -39,5 +170,274 @@
   <audio id="vaca" src="vaca.mp3" preload="auto"></audio>
   <audio id="bentevi" src="passaro.mp3" preload="auto"></audio>
   <audio id="trem" src="trem.mp3" preload="auto"></audio>
+
+<script>
+"use strict";
+
+const video = document.getElementById("videoEcologia");
+const iniciar = document.getElementById("botaoIniciar");
+const parar = document.getElementById("botaoParar");
+const confirmar = document.getElementById("botaoConfirmar");
+const mensagem = document.getElementById("mensagem");
+
+const botoes = [...document.querySelectorAll("#botoes button")];
+const botoesSom = [...document.querySelectorAll("[data-som]")];
+const audios = [...document.querySelectorAll("audio")];
+
+const selecionados = new Set();
+
+let operacao = 0;
+let emReproducao = false;
+
+// Última combinação confirmada, usada na comparação.
+let combinacaoAnterior = null;
+
+// Ordem fixa para nomear a combinação.
+const ordem = ["vento", "vaca", "bentevi", "trem"];
+
+// Função de cada camada na paisagem sonora:
+// som fundamental (fundo), sinal e marca sonora.
+const camadas = {
+  vento:   { rotulo: "Vento",   funcao: "fundo" },
+  vaca:    { rotulo: "Vaca",    funcao: "sinal" },
+  bentevi: { rotulo: "Pássaro", funcao: "sinal" },
+  trem:    { rotulo: "Trem",    funcao: "marca" }
+};
+
+function maiuscula(texto) {
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+function avisar(texto) {
+  mensagem.textContent = texto;
+  mensagem.hidden = false;
+}
+
+// Nome da combinação, em ordem fixa.
+function nomear(conjunto) {
+  if (!conjunto.size) return "silêncio";
+
+  return ordem
+    .filter(id => conjunto.has(id))
+    .map(id => camadas[id].rotulo)
+    .join(" + ");
+}
+
+// Linha 2: cada camada escolhida pela função que cumpre na paisagem.
+function classificar(conjunto) {
+  if (!conjunto.size) return "Sem camadas selecionadas.";
+
+  const porFuncao = rotuloDaFuncao =>
+    ordem
+      .filter(id => conjunto.has(id) && camadas[id].funcao === rotuloDaFuncao)
+      .map(id => camadas[id].rotulo.toLowerCase());
+
+  const partes = [];
+  const fundo = porFuncao("fundo");
+  const sinais = porFuncao("sinal");
+  const marcas = porFuncao("marca");
+
+  if (fundo.length) partes.push(`Fundo: ${fundo.join(", ")}.`);
+  if (sinais.length) partes.push(`Sinais: ${sinais.join(", ")}.`);
+  if (marcas.length) partes.push(`Marca: ${marcas.join(", ")}.`);
+
+  return partes.join(" ");
+}
+
+// Linha 3: o que a combinação faz com a escuta.
+function escuta(conjunto) {
+  const tem = id => conjunto.has(id);
+
+  if (!conjunto.size) return "O silêncio deixa a cena por conta do olhar.";
+
+  if (conjunto.size === ordem.length) {
+    return "Muitos sinais juntos: nada se destaca.";
+  }
+
+  if (conjunto.size === 1) {
+    return tem("vento")
+      ? "Só o fundo: a cena soa contínua, sem eventos."
+      : "Um único sinal concentra a atenção.";
+  }
+
+  if (tem("vento")) return "O vento faz o fundo; os outros sons vêm à frente.";
+  if (tem("trem")) return "O trem alarga o espaço para fora do quadro.";
+
+  return "Sem fundo contínuo, cada som soa isolado.";
+}
+
+function interromper(voltarAoInicio = false) {
+  operacao++;
+  emReproducao = false;
+
+  video.pause();
+  audios.forEach(audio => audio.pause());
+
+  if (voltarAoInicio) {
+    video.currentTime = 0;
+    audios.forEach(audio => { audio.currentTime = 0; });
+  }
+}
+
+async function iniciarVideo() {
+  interromper(true);
+
+  const tentativa = operacao;
+
+  mensagem.hidden = true;
+
+  const midias = [
+    video,
+    ...[...selecionados].map(id => document.getElementById(id))
+  ];
+
+  emReproducao = true;
+
+  try {
+    // Inicia todas as mídias na mesma ação do usuário.
+    // Arquivos separados não garantem sincronismo de precisão.
+    await Promise.all(midias.map(midia => midia.play()));
+  } catch (erro) {
+    if (tentativa !== operacao) return;
+
+    interromper();
+    avisar("Não foi possível reproduzir.\nConfira os arquivos na pasta.");
+    console.error(erro);
+  }
+}
+
+// Ativa ou desativa cada camada.
+botoesSom.forEach(botao => {
+  botao.addEventListener("click", () => {
+    const id = botao.dataset.som;
+
+    if (selecionados.has(id)) {
+      selecionados.delete(id);
+    } else {
+      selecionados.add(id);
+    }
+
+    botao.setAttribute("aria-pressed", String(selecionados.has(id)));
+
+    avisar(maiuscula(nomear(selecionados)) + "\nPressione Iniciar.");
+  });
+});
+
+iniciar.addEventListener("click", iniciarVideo);
+
+parar.addEventListener("click", () => {
+  interromper(true);
+  avisar("Parado.\nEscolhas mantidas.");
+});
+
+// Confirmar: quatro linhas curtas.
+// Combinação, função de cada camada, efeito na escuta e comparação.
+confirmar.addEventListener("click", () => {
+  interromper();
+
+  const nomeAtual = nomear(selecionados);
+
+  const fecho =
+    combinacaoAnterior && combinacaoAnterior !== nomeAtual
+      ? `Antes: ${combinacaoAnterior}. O que mudou?`
+      : "Troque uma camada e escute a diferença.";
+
+  combinacaoAnterior = nomeAtual;
+
+  avisar([
+    maiuscula(nomeAtual),
+    classificar(selecionados),
+    escuta(selecionados),
+    fecho
+  ].join("\n"));
+});
+
+video.addEventListener("ended", () => {
+  interromper();
+  avisar("Fim do vídeo.\nIniciar repete. Confirmar comenta.");
+});
+
+[video, ...audios].forEach(midia => {
+  midia.addEventListener("error", () => {
+    const midiaEmUso = midia === video || selecionados.has(midia.id);
+
+    if (emReproducao && midiaEmUso) {
+      interromper();
+      avisar("Falha ao carregar uma mídia.\nConfira os nomes dos arquivos.");
+    }
+  });
+});
+
+// Navegação pelo teclado ou controle que envie essas teclas.
+document.addEventListener("keydown", event => {
+  const indice = botoes.indexOf(document.activeElement);
+
+  const direcao = {
+    ArrowRight: 1,
+    ArrowDown: 1,
+    ArrowLeft: -1,
+    ArrowUp: -1
+  }[event.key];
+
+  if (direcao) {
+    event.preventDefault();
+
+    const proximo =
+      indice < 0 ? 0 : (indice + direcao + botoes.length) % botoes.length;
+
+    botoes[proximo].focus();
+    botoes[proximo].scrollIntoView({ block: "nearest", inline: "nearest" });
+  } else if (
+    event.key === "Enter" ||
+    event.key === "OK" ||
+    event.key === "Select"
+  ) {
+    event.preventDefault();
+
+    if (event.repeat) return;
+
+    if (indice < 0) {
+      iniciar.focus();
+    } else {
+      botoes[indice].click();
+    }
+  }
+});
+
+// Tela cheia.
+// Os navegadores só permitem o modo a partir de uma ação do usuário,
+// então o pedido é feito na primeira interação com a página:
+// qualquer clique ou tecla, inclusive o Enter que aciona Iniciar.
+function telaCheia() {
+  const raiz = document.documentElement;
+
+  const pedir =
+    raiz.requestFullscreen ||
+    raiz.webkitRequestFullscreen ||
+    raiz.msRequestFullscreen;
+
+  if (!pedir || document.fullscreenElement) return;
+
+  const pedido = pedir.call(raiz);
+
+  // Navegadores que recusam o pedido não devem quebrar a página.
+  if (pedido && pedido.catch) pedido.catch(() => {});
+}
+
+function primeiraInteracao() {
+  telaCheia();
+
+  document.removeEventListener("click", primeiraInteracao, true);
+  document.removeEventListener("keydown", primeiraInteracao, true);
+}
+
+// Captura antes dos demais tratadores, para aproveitar a mesma ação.
+document.addEventListener("click", primeiraInteracao, true);
+document.addEventListener("keydown", primeiraInteracao, true);
+
+// Estado inicial: vídeo parado e botão Iniciar em foco.
+video.pause();
+iniciar.focus();
+</script>
 </body>
 </html>
