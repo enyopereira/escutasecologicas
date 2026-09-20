@@ -85,33 +85,18 @@ html, body {
 }
 #botoes button[aria-pressed="true"]::before { content: "✓ "; }
 
-/* A caixa de retorno recebe textos mais longos que na versão anterior:
-   ocupa mais altura, começa mais acima e usa corpo menor com entrelinha maior. */
 #mensagem {
   position: fixed;
-  top: 12%;
-  right: 8%;
-  width: 42%;
-  max-height: 60%;
+  top: 74%;
+  right: 10%;
+  width: 40%;
+  max-height: 50%;
   overflow-y: auto;
   margin: 0;
-  padding: 16px 18px;
+  padding: 14px;
   border-radius: 6px;
   color: #fff;
-  background: rgba(0, 0, 0, 0.72);
-  font-size: 24px;
-  line-height: 1.35;
+  background: rgba(0, 0, 0, 0.70);
+  font-size: 30px;
   white-space: pre-line;
-}
-
-/* Créditos das mídias, se exibidos na tela. */
-#creditos {
-  position: fixed;
-  left: 10%;
-  bottom: 3%;
-  width: 80%;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 16px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }

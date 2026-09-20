@@ -15,99 +15,25 @@ const selecionados = new Set();
 let operacao = 0;
 let emReproducao = false;
 
-// Última combinação confirmada, usada para a comparação.
-let combinacaoAnterior = null;
+// Comentários apresentados ao confirmar a composição.
+const comentarios = {
+  vento:
+    "Vento: evento natural do lugar.",
 
-// Ordem fixa das camadas, para que o nome da combinação
-// não dependa da ordem em que os botões foram pressionados.
-const ordem = ["vento", "vaca", "bentevi", "trem"];
+  vaca:
+    "Vaca: animal natural do lugar.",
 
-// Descrição de cada camada.
-// A função segue a terminologia da paisagem sonora de Schafer:
-// som fundamental (tônica), sinal e marca sonora.
-// O texto descreve o efeito da camada sobre a cena,
-// sem afirmar se o som pertence ou não ao lugar.
-const camadas = {
-  vento: {
-    rotulo: "Vento",
-    funcao: "som fundamental",
-    efeito:
-      "sopro contínuo que preenche o fundo e dá continuidade à cena; " +
-      "as outras camadas passam a ser ouvidas sobre ele"
-  },
+  bentevi:
+    "Passaro: animal natural do lugar.",
 
-  vaca: {
-    rotulo: "Vaca",
-    funcao: "sinal",
-    efeito:
-      "marca a presença de criação animal e situa a pastagem " +
-      "como paisagem de trabalho, e não apenas de contemplação"
-  },
-
-  bentevi: {
-    rotulo: "Pássaro",
-    funcao: "sinal",
-    efeito:
-      "evento pontual e agudo que puxa a atenção para o primeiro plano " +
-      "e sugere proximidade"
-  },
-
-  trem: {
-    rotulo: "Trem",
-    funcao: "marca sonora",
-    efeito:
-      "sinal mecânico distante que introduz outro tempo na cena " +
-      "e amplia o espaço para além do que a imagem mostra"
-  }
+  trem:
+    "Trem: não pertence a paisagem natural."
 };
 
 // Exibe uma mensagem na tela.
 function avisar(texto) {
   mensagem.textContent = texto;
   mensagem.hidden = false;
-}
-
-// Nome da combinação, em ordem fixa.
-function nomear(conjunto) {
-  if (!conjunto.size) return "silêncio";
-
-  return ordem
-    .filter(id => conjunto.has(id))
-    .map(id => camadas[id].rotulo)
-    .join(" + ");
-}
-
-// Uma linha por camada escolhida.
-function descreverCamadas(conjunto) {
-  return ordem
-    .filter(id => conjunto.has(id))
-    .map(id => `${camadas[id].rotulo} — ${camadas[id].funcao}: ${camadas[id].efeito}.`)
-    .join("\n");
-}
-
-// Observações sobre o conjunto, e não sobre cada som isolado.
-function descreverComposicao(conjunto) {
-  const notas = [];
-
-  if (!conjunto.size) {
-    notas.push("Sem camadas sonoras, a cena depende apenas do que se vê.");
-  } else if (conjunto.size === 1) {
-    notas.push("Com uma única camada, a cena se organiza em torno de um acontecimento.");
-  }
-
-  if (conjunto.has("vento") && conjunto.size > 1) {
-    notas.push("O vento sustenta o fundo, e as demais camadas aparecem em primeiro plano.");
-  }
-
-  if (conjunto.has("trem")) {
-    notas.push("O trem abre a cena para fora do quadro: soa um espaço que a imagem não mostra.");
-  }
-
-  if (conjunto.size === ordem.length) {
-    notas.push("Com as quatro camadas juntas, nada se destaca. Retire uma e escute de novo.");
-  }
-
-  return notas.join(" ");
 }
 
 // Interrompe o vídeo e todos os sons.
@@ -167,7 +93,7 @@ async function iniciarVideo() {
   }
 }
 
-// Ativa ou desativa cada camada.
+// Ativa ou desativa cada som.
 // As alterações são aplicadas ao pressionar Iniciar novamente.
 botoesSom.forEach(botao => {
   botao.addEventListener("click", () => {
@@ -185,8 +111,7 @@ botoesSom.forEach(botao => {
     );
 
     avisar(
-      `Combinação atual: ${nomear(selecionados)}. ` +
-      "Pressione Iniciar para ouvir desde o começo."
+      "Seleção atualizada. Pressione Iniciar para ouvir desde o começo."
     );
   });
 });
@@ -203,40 +128,27 @@ parar.addEventListener("click", () => {
   );
 });
 
-// Botão Confirmar: descreve o efeito da combinação
-// e, a partir da segunda confirmação, compara com a anterior.
+// Botão Confirmar: apresenta o feedback.
 confirmar.addEventListener("click", () => {
   interromper();
 
-  const nomeAtual = nomear(selecionados);
-  const partes = [`Combinação: ${nomeAtual}.`];
-
-  if (selecionados.size) {
-    partes.push(descreverCamadas(selecionados));
-  }
-
-  const composicao = descreverComposicao(selecionados);
-
-  if (composicao) {
-    partes.push(composicao);
-  }
-
-  if (combinacaoAnterior && combinacaoAnterior !== nomeAtual) {
-    partes.push(
-      `Antes: ${combinacaoAnterior}.\n` +
-      `Agora: ${nomeAtual}.\n` +
-      "O que mudou na sua percepção da cena?"
+  if (!selecionados.size) {
+    avisar(
+      "Nenhum som selecionado. Escolha um ou mais sons para compor a paisagem."
     );
-  } else {
-    partes.push(
-      "Nenhuma combinação está certa ou errada. " +
-      "Troque uma camada, pressione Iniciar e escute de novo para comparar."
-    );
+
+    return;
   }
 
-  combinacaoAnterior = nomeAtual;
+  const texto = [...selecionados].map(id => comentarios[id]);
 
-  avisar(partes.join("\n\n"));
+  texto.push(
+    selecionados.size === 4
+      ? "Todos os sons precisam do mesmo destaque? Retire uma camada e escute novamente."
+      : ""
+  );
+
+  avisar(texto.join("\n\n"));
 });
 
 // Ao terminar, mantém o último quadro e interrompe os sons.
@@ -245,7 +157,7 @@ video.addEventListener("ended", () => {
 
   avisar(
     "Fim do vídeo. Pressione Iniciar para repetir " +
-    "ou Confirmar para ler os efeitos desta combinação."
+    "ou Confirmar para receber o feedback."
   );
 });
 
